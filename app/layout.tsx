@@ -24,8 +24,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
+  if (!publishableKey) {
+    return (
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <div className="p-6 max-w-xl mx-auto">
+            <h1 className="text-xl font-semibold mb-2">Missing Clerk environment variables</h1>
+            <p className="mb-3">Set <code>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY</code> and <code>CLERK_SECRET_KEY</code> in <code>.env.local</code>.</p>
+            <p>See <code>.env.local.example</code> for the required keys.</p>
+          </div>
+          {children}
+        </body>
+      </html>
+    )
+  }
+
   return (
-    <ClerkProvider>
+    <ClerkProvider publishableKey={publishableKey} signInUrl="/sign-in" signUpUrl="/sign-up">
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           <header className="flex justify-end items-center p-4 gap-4 h-16">
